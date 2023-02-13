@@ -1,11 +1,15 @@
+import { Product } from "@/context/CartContext";
 import { stripe } from "@/lib/stripe";
 import { NextApiRequest, NextApiResponse } from "next";
+import { isTemplateMiddle } from "typescript";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const { priceId } = req.body;
+
+  console.log(priceId);
 
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed." });
@@ -23,12 +27,12 @@ export default async function handler(
     success_url: successUrl,
     cancel_url: cancelUrl,
     mode: "payment",
-    line_items: [
-      {
-        price: priceId,
+    line_items: priceId.map((item: string) => {
+      return {
+        price: item,
         quantity: 1,
-      },
-    ],
+      };
+    }),
   });
 
   return res.status(201).json({

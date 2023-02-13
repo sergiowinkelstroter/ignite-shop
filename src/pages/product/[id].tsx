@@ -1,46 +1,35 @@
+import { CartContext } from "@/context/CartContext";
 import { stripe } from "@/lib/stripe";
 import {
   ImageContainer,
   ProductContainer,
   ProductDetails,
 } from "@/styles/pages/product";
-import axios from "axios";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Stripe from "stripe";
+import { toast } from "react-toastify";
+import { priceFormatted } from "@/utils/priceFormatted";
 
 interface ProductProps {
   product: {
     id: string;
     name: string;
     imageUrl: string;
-    price: string;
+    price: number;
     description: string;
     defaultPriceId: string;
   };
 }
 
 export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
-    useState(false);
+  const { addToCart } = useContext(CartContext);
 
-  async function handleByProduct() {
-    try {
-      setIsCreatingCheckoutSession(true);
-
-      const response = await axios.post("/api/checkout", {
-        priceId: product.defaultPriceId,
-      });
-
-      const { checkoutUrl } = response.data;
-
-      window.location.href = checkoutUrl;
-    } catch (err) {
-      setIsCreatingCheckoutSession(false);
-      alert("Falha ao direcionar ao checkout!");
-    }
+  function handleAddProduct() {
+    toast.success("Seu produto foi adicionado na sacola");
+    addToCart(product);
   }
 
   return (
@@ -54,16 +43,11 @@ export default function Product({ product }: ProductProps) {
         </ImageContainer>
         <ProductDetails>
           <h1>{product.name}</h1>
-          <span>{product.price}</span>
+          <span>{priceFormatted(product.price / 100)}</span>
 
           <p>{product.description}</p>
 
-          <button
-            disabled={isCreatingCheckoutSession}
-            onClick={handleByProduct}
-          >
-            Comprar agora
-          </button>
+          <button onClick={() => handleAddProduct()}>Colocar na sacola</button>
         </ProductDetails>
       </ProductContainer>
     </>
@@ -94,10 +78,7 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
         id: product.id,
         name: product.name,
         imageUrl: product.images[0],
-        price: new Intl.NumberFormat("pt-BR", {
-          style: "currency",
-          currency: "BRl",
-        }).format(price.unit_amount! / 100),
+        price: price.unit_amount,
         description: product.description,
         defaultPriceId: price.id,
       },

@@ -12,3 +12,5 @@ Projeto desenvolvido no Ignite Rocketseat
 - Axios
 - Stripe
 - Keen-slider
+- React Toastify
+- Uuid

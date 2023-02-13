@@ -42,9 +42,10 @@ export const ImageContainer = styled("div", {
   maxWidth: 130,
   height: 145,
   background: "linear-gradient(180deg, #1ea483 0%, #7465d4 100%)",
-  borderRadius: 8,
   padding: "0.25rem",
   marginTop: "4rem",
+
+  borderRadius: 10000000,
 
   display: "flex",
   justifyContent: "center",

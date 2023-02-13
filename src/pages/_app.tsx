@@ -1,17 +1,21 @@
 import type { AppProps } from "next/app";
 import { globalStyles } from "@/styles/global";
-import logo from "../assets/logo.svg";
-import Image from "next/image";
-import { Container, Header } from "src/styles/pages/app";
+
+import { Container } from "src/styles/pages/app";
+import { HeaderComponent } from "@/components/Header";
+import { CartProvider } from "@/context/CartContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 globalStyles();
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Container>
-      <Header>
-        <Image src={logo} width={130} height={52} alt="" />
-      </Header>
-      <Component {...pageProps} />
-    </Container>
+    <CartProvider>
+      <Container>
+        <HeaderComponent />
+        <Component {...pageProps} />
+        <ToastContainer position="bottom-left" />
+      </Container>
+    </CartProvider>
   );
 }
