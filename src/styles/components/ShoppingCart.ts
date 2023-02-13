@@ -34,13 +34,17 @@ export const CloseButton = styled("button", {
 });
 
 export const ItemContainer = styled("section", {
-  minHeight: 350,
+  height: "17rem",
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-start",
   gap: "1rem",
 
   marginTop: "2rem",
+
+  overflow: "auto",
+
+  borderRadius: 6,
 });
 
 export const Item = styled("div", {
